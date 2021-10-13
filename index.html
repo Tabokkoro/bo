@@ -1,0 +1,1277 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+
+  let choose_no = 0;
+  var now_date = new Date();
+  var tmp_time1 = new Date();
+  var tmp_time2 = new Date();
+
+$(window).on('load', function() {
+    // ニックネーム読み込み
+    var nick_name = window.localStorage.getItem('nick_name');
+    $('input:text[name="text5"]').val(nick_name);
+
+    // 部屋レベル読み込み
+    var room_lv = window.localStorage.getItem('room_lv');
+    $('input:text[name="text6"]').val(room_lv);
+
+    // 招待リンク読み込み
+    var go_link = window.localStorage.getItem('go_link');
+    $('input:text[name="text7"]').val(go_link);
+
+    // 招待チャンネル読み込み
+    var go_channel = window.localStorage.getItem('go_channel');
+    $('input:text[name="text8"]').val(go_channel);
+
+    
+    // 読み込み
+    for (let i = 0;i < 100;i++) {
+      var yomikomi_disp = window.localStorage.getItem('lo_disp_'+i);
+      if (yomikomi_disp == null){
+        yomikomi_disp = "未設定"
+      }
+      $("#select_load").append($('<option>').html(""+i+":"+yomikomi_disp).val(i));
+    }
+    
+    // 
+    $('input[name="test1"]'). val(convetDateToIso(now_date));
+    $('input[name="test2"]'). val(convetDateToIso(now_date));
+      function convetDateToIso(now_date){
+        return now_date.getFullYear()+'-'
+             + (("0"+(now_date.getMonth() + 1)).slice(-2))+'-'
+             + ("0"+now_date.getDate()).slice(-2)
+             //+'T'
+             //+ ("0"+d.getHours()).slice(-2)+':'
+             //+ ("0"+d.getMinutes()).slice(-2)
+             //+':'
+             //+ ("0"+d.getSeconds()).slice(-2);
+      }
+    
+    for(let th_cnt=0;th_cnt<24;th_cnt++){
+      console.log("ループ内1");
+      if( now_date.getHours() <= th_cnt ){
+        console.log(th_cnt);
+        $("#test1-1").val(th_cnt);
+        $("#test2-1").val(th_cnt);
+        break;
+      }
+    }
+    
+    for(let tm_cnt=0;tm_cnt<12;tm_cnt++){
+      console.log("ループ内2");
+      if( now_date.getMinutes() <= tm_cnt*5 ){
+        console.log(tm_cnt);
+        $("#test1-2").val(tm_cnt*5);
+        $("#test2-2").val(tm_cnt*5);
+        break;
+      }
+    }
+});
+
+$(function() {
+  $('#js-copybtn1').on('click', function(){
+    var arr = new Array();
+    var arr2 = new Array();
+    let gattai = "";
+    
+    if ($("#realtime_checkbox").prop("checked") == true) {
+      tmp_time1 = new Date($('input[name="test1"]').val().replace(/-/g,"/")+" "+('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2));
+      
+      var time1 = tmp_time1.getTime() - now_date.getTime()
+      var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+      var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+      var day3 = Math.floor(time1 / (1000 * 60 )) + 1; // m
+      if (day3 >= 0){
+        $('input[name="bosyuu_fun"]').val(day3)
+      }else{
+        $('input[name="bosyuu_fun"]').val(0)
+      }
+    }
+
+	let mae_tuika = "";
+    // ギンギン追加
+    let tmp_prs = $('input[name="checkbox1"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // マスピ追加
+    tmp_prs = $('input[name="checkbox2"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox3"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // ランダム追加
+    tmp_prs = $('input[name="checkbox4"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox5"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・スタン追加
+    tmp_prs = $('input[name="checkbox6"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・クリスタル追加
+    tmp_prs = $('input[name="checkbox7"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊なし追加
+    tmp_prs = $('input[name="checkbox8"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊あり追加
+    tmp_prs = $('input[name="checkbox9"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    if (arr.length > 0){
+      mae_tuika = "ステージ："
+    } else {
+      mae_tuika = ""
+    }
+    
+    // 1.リスト設定
+    tmp_prs = $('input[name="radio1"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 2.サドンデス
+    tmp_prs = $('input[name="radio2"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 3.シャッフル
+    tmp_prs = $('input[name="radio3"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 4.特殊
+    tmp_prs = $('input[name="radio4"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 5.みそボン
+    tmp_prs = $('input[name="radio5"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 6.初投
+    tmp_prs = $('input[name="radio6"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 7.序攻
+    tmp_prs = $('input[name="radio7"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 8.補助
+    tmp_prs = $('input[name="radio8"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 9.途中退出
+    tmp_prs = $('input[name="radio9"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 10.取り下げ
+    tmp_prs = $('input[name="radio10"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+
+    gattai = '"' + mae_tuika + arr.join("・")
+    if (arr2.length > 0){
+      gattai += '●' + arr2.join("、")
+    }
+
+    gattai += '"'
+
+    if ($('input:text[name="text4"]').val() == undefined || $('input:text[name="text4"]').val() == "") {
+    }else{
+      gattai = '"' + $('input:text[name="text4"]').val() + '"'
+    }
+
+    // gattai = '"' + '"'
+    $('#js-copytext').text(
+        '.pt "'+
+        $('input:text[name="text1"]').val()+
+        '" '+
+        '"'+
+        $('input:text[name="text2"]').val()+
+        '" '+
+        gattai+
+        ' '+
+        $('input[name="minnum"]').val()+
+        ' '+
+        $('input[name="maxnum"]').val()+
+        ' '+
+        $('input[name="bosyuu_fun"]').val()+
+        ' '+
+        $('input[name="play_fun"]').val()
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+
+  $('#js-copybtn2').on('click', function(){
+    $('#js-copytext').text(
+        '.te '+
+        $('input:text[name="text3"]').val()+
+        ' "'+
+        $('input:text[name="text1"]').val()+
+        '"'
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+
+  $('#js-copybtn3').on('click', function(){
+    $('#js-copytext').text(
+        '.re '+
+        $('input:text[name="text3"]').val()+
+        ' "'+
+        $('input:text[name="text2"]').val()+
+        '"'
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+  
+  $('#js-copybtn4').on('click', function(){
+    $('#js-copytext').text(
+        '.se '+
+        $('input:text[name="text3"]').val()+
+        ' "'+
+        $('input:text[name="text4"]').val()+
+        '"'
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+
+  $('#js-copybtn5').on('click', function(){
+    // コピーする文章の取得
+    //let text = $('#js-yomikomitext').text();
+    // テキストエリアの作成
+    //let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    //$textarea.text(text);
+    //　テキストエリアを挿入
+    //$(this).append($textarea);
+    //　テキストエリアを選択
+    //$textarea.select();
+    // コピー
+    //document.execCommand('copy');
+    // テキストエリアの削除
+    //$textarea.remove();
+    // アラート文の表示
+    
+    // 読み込み
+    // $('#select_load').remove();
+    choose_no = Number($('#select_load').val())
+    for (let i = 0;i < 100;i++) {
+      //$('.test7 option:first-child').remove();
+      $('#select_load option:eq('+1+')').remove();
+      var yomikomi_disp = window.localStorage.getItem('lo_disp_'+i);
+      if (yomikomi_disp == null){
+        yomikomi_disp = "未設定"
+      }
+      $("#select_load").append($('<option>').html(""+i+":"+yomikomi_disp).val(i));
+    }
+    $('#select_load').prop('selectedIndex', ""+(choose_no+1));
+    
+    // 読み込み1
+    $('input:text[name="lo_disp"]').val(window.localStorage.getItem('lo_disp_'+$('input[name="lo_no"]').val()));
+    $('input:text[name="text1"]').val(window.localStorage.getItem('text1_'+$('input[name="lo_no"]').val()));
+    $('input:text[name="text2"]').val(window.localStorage.getItem('text2_'+$('input[name="lo_no"]').val()));
+    $('input:text[name="text4"]').val(window.localStorage.getItem('text4_'+$('input[name="lo_no"]').val()));
+    $('#js-yomikomialert').show().delay(2000).fadeOut(400);
+  });
+  
+  $('#js-copybtn6').on('click', function(){
+    // コピーする文章の取得
+    //let text = $('#js-hozontext').text();
+    // テキストエリアの作成
+    //let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    //$textarea.text(text);
+    //　テキストエリアを挿入
+    //$(this).append($textarea);
+    //　テキストエリアを選択
+    //$textarea.select();
+    // コピー
+    //document.execCommand('copy');
+    // テキストエリアの削除
+    //$textarea.remove();
+    // アラート文の表示
+    
+    // 保存1
+    //$('input:text[name="lo_disp"]').val(window.localStorage.getItem('lo_disp_'+));
+    window.localStorage.setItem('lo_disp_'+$('input[name="lo_no"]').val(),$('input:text[name="lo_disp"]').val());
+    window.localStorage.setItem('text1_'+$('input[name="lo_no"]').val(),$('input:text[name="text1"]').val());
+    window.localStorage.setItem('text2_'+$('input[name="lo_no"]').val(),$('input:text[name="text2"]').val());
+    window.localStorage.setItem('text4_'+$('input[name="lo_no"]').val(),$('input:text[name="text4"]').val());
+    $('#js-hozonalert').show().delay(2000).fadeOut(400);
+    
+    // 読み込み
+    //$('#select_load').remove();
+    choose_no = Number($('#select_load').val())
+    for (let i = 0;i < 100;i++) {
+      $('#select_load option:eq('+1+')').remove();
+      var yomikomi_disp = window.localStorage.getItem('lo_disp_'+i);
+      if (yomikomi_disp == null || yomikomi_disp == ""){
+        yomikomi_disp = "未設定"
+      }
+      $("#select_load").append($('<option>').html(""+i+":"+yomikomi_disp).val(i));
+    }
+    if ($('input[name="lo_disp"]').val() == ""){
+      window.localStorage.removeItem('lo_disp_'+$('input[name="lo_no"]').val());
+      window.localStorage.removeItem('text1_'+$('input[name="lo_no"]').val());
+      window.localStorage.removeItem('text2_'+$('input[name="lo_no"]').val());
+      window.localStorage.removeItem('text4_'+$('input[name="lo_no"]').val());
+    }
+    $('#select_load').prop('selectedIndex', ""+(choose_no+1));
+  });
+  
+  $('#js-copybtn8').on('click', function(){
+    tmp_time1 = new Date($('input[name="test2"]').val().replace(/-/g,"/")+" "+('0' + $("#test2-1").val()).slice(-2)+':'+('0'+$("#test2-2").val()).slice(-2));
+    
+    var time1 = tmp_time1.getTime() - tmp_time2.getTime();
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1 - $('input[name="bosyuu_fun"]').val(); // m
+    if (day3 >= 0){
+      $('input[name="play_fun"]').val(day3)
+    }else{
+      $('input[name="play_fun"]').val(0)
+    }
+  });
+
+  $('#js-copybtn9').on('click', function(){
+    var arr = new Array();
+    var arr2 = new Array();
+    let gattai = "";
+    
+    window.localStorage.setItem('nick_name',$('input:text[name="text5"]').val());
+    window.localStorage.setItem('room_lv',$('input:text[name="text6"]').val());
+    window.localStorage.setItem('go_link',$('input:text[name="text7"]').val());
+    window.localStorage.setItem('go_channel',$('input:text[name="text8"]').val());
+
+	let mae_tuika = "";
+    // ギンギン追加
+    let tmp_prs = $('input[name="checkbox1"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // マスピ追加
+    tmp_prs = $('input[name="checkbox2"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox3"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // ランダム追加
+    tmp_prs = $('input[name="checkbox4"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox5"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・スタン追加
+    tmp_prs = $('input[name="checkbox6"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・クリスタル追加
+    tmp_prs = $('input[name="checkbox7"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊なし追加
+    tmp_prs = $('input[name="checkbox8"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊あり追加
+    tmp_prs = $('input[name="checkbox9"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    if (arr.length > 0){
+      mae_tuika = "ステージ："
+    } else {
+      mae_tuika = ""
+    }
+    
+    // 1.リスト設定
+    tmp_prs = $('input[name="radio1"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 2.サドンデス
+    tmp_prs = $('input[name="radio2"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 3.シャッフル
+    tmp_prs = $('input[name="radio3"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 4.特殊
+    tmp_prs = $('input[name="radio4"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 5.みそボン
+    tmp_prs = $('input[name="radio5"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 6.初投
+    tmp_prs = $('input[name="radio6"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 7.序攻
+    tmp_prs = $('input[name="radio7"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 8.補助
+    tmp_prs = $('input[name="radio8"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 9.途中退出
+    tmp_prs = $('input[name="radio9"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 10.取り下げ
+    tmp_prs = $('input[name="radio10"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    
+    kaisaimae_bangou = ""
+    if($('input:text[name="text2"]').val() == ""){
+      kaisaimae_bangou = "（開催前）"
+    }
+
+    gattai = '【' + mae_tuika + arr.join("・")
+    if (arr2.length > 0){
+      gattai += '●' + arr2.join("、")
+    }
+
+    gattai += '】'
+
+    if ($('input:text[name="text4"]').val() == undefined || $('input:text[name="text4"]').val() == "") {
+    }else{
+      gattai = '【' + $('input:text[name="text4"]').val() + '】'
+    }
+
+    // gattai = '"' + '"'
+    $('#js-copytext').text(
+        '🟩'+
+        $('input:text[name="text5"]').val()+
+        ' '+
+        $('input:text[name="text2"]').val()+
+        kaisaimae_bangou+
+        '→'+
+        $('input:text[name="text1"]').val()+
+        ' 最低:'+
+        $('input[name="minnum"]').val()+
+        '人 最大:'+
+        $('input[name="maxnum"]').val()+
+        '人まで募集 '+
+        ('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2)+
+        'までに集まらなかったら〆 '+
+        $('input[name="play_fun"]').val()+
+        '分程の予定 '+
+        gattai
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+
+  $('#js-copybtn10').on('click', function(){
+    var arr = new Array();
+    var arr2 = new Array();
+    let gattai = "";
+    
+    window.localStorage.setItem('nick_name',$('input:text[name="text5"]').val());
+    window.localStorage.setItem('room_lv',$('input:text[name="text6"]').val());
+    window.localStorage.setItem('go_link',$('input:text[name="text7"]').val());
+    window.localStorage.setItem('go_channel',$('input:text[name="text8"]').val());
+
+	let mae_tuika = "";
+    // ギンギン追加
+    let tmp_prs = $('input[name="checkbox1"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // マスピ追加
+    tmp_prs = $('input[name="checkbox2"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox3"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // ランダム追加
+    tmp_prs = $('input[name="checkbox4"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // スタン追加
+    tmp_prs = $('input[name="checkbox5"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・スタン追加
+    tmp_prs = $('input[name="checkbox6"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // グランプリ・クリスタル追加
+    tmp_prs = $('input[name="checkbox7"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊なし追加
+    tmp_prs = $('input[name="checkbox8"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    // 64特殊あり追加
+    tmp_prs = $('input[name="checkbox9"]:checked').val();
+    if (tmp_prs == undefined) {
+      tmp_prs = "";
+    } else {
+      arr.push(tmp_prs);
+    }
+    if (arr.length > 0){
+      mae_tuika = "ステージ："
+    } else {
+      mae_tuika = ""
+    }
+    
+    // 1.リスト設定
+    tmp_prs = $('input[name="radio1"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 2.サドンデス
+    tmp_prs = $('input[name="radio2"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 3.シャッフル
+    tmp_prs = $('input[name="radio3"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 4.特殊
+    tmp_prs = $('input[name="radio4"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 5.みそボン
+    tmp_prs = $('input[name="radio5"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 6.初投
+    tmp_prs = $('input[name="radio6"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 7.序攻
+    tmp_prs = $('input[name="radio7"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 8.補助
+    tmp_prs = $('input[name="radio8"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 9.途中退出
+    tmp_prs = $('input[name="radio9"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    // 10.取り下げ
+    tmp_prs = $('input[name="radio10"]:checked').val();
+    if (tmp_prs == undefined || tmp_prs == "") {
+      tmp_prs = "";
+    } else {
+      arr2.push(tmp_prs);
+    }
+    
+    kaisaimae_bangou = ""
+    if($('input:text[name="text2"]').val() == ""){
+      kaisaimae_bangou = "（開催前）"
+    }
+
+    gattai = '$' + mae_tuika + arr.join("・")
+    if (arr2.length > 0){
+      gattai += '●' + arr2.join("、")
+    }
+
+    gattai += '$'
+
+    if ($('input:text[name="text4"]').val() == undefined || $('input:text[name="text4"]').val() == "") {
+    }else{
+      gattai = '$' + $('input:text[name="text4"]').val() + '$'
+    }
+
+    // gattai = '"' + '"'
+    $('#js-copytext').text(
+        ''+
+        $('input:text[name="text5"]').val()+
+        '$'+
+        $('input:text[name="text2"]').val()+
+        kaisaimae_bangou+
+        '$'+
+        $('input[name="maxnum"]').val()+
+        '$'+
+        $('input:text[name="text1"]').val()+
+        '$'+
+        $('input[name="play_fun"]').val()+
+        '分程の予定 '+
+        '$'+
+        $('input:text[name="text6"]').val()+
+        gattai+
+        $('input:text[name="text7"]').val()+
+        '$'+
+        $('input:text[name="text8"]').val()+
+        '$'+
+        $('input:text[name="text9"]').val()
+    );
+    // コピーする文章の取得
+    let text = $('#js-copytext').text();
+    // テキストエリアの作成
+    let $textarea = $('<textarea></textarea>');
+    // テキストエリアに文章を挿入
+    $textarea.text(text);
+    //　テキストエリアを挿入
+    $(this).append($textarea);
+    //　テキストエリアを選択
+    $textarea.select();
+    // コピー
+    document.execCommand('copy');
+    // テキストエリアの削除
+    $textarea.remove();
+    // アラート文の表示
+    $('#js-copyalert').show().delay(2000).fadeOut(400);
+  });
+
+  
+  $("#select_load").change(function() {
+    var val = $(this).val();
+      $('input[name="lo_no"]').val(val)
+  });
+  // メインタイムチェンジ1
+  $('input[name="test1"]').change(function() {
+    tmp_time1 = new Date($('input[name="test1"]').val().replace(/-/g,"/")+" "+('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2));
+    
+    var time1 = tmp_time1.getTime() - now_date.getTime()
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1; // m
+    if (day3 >= 0){
+      $('input[name="bosyuu_fun"]').val(day3)
+    }else{
+      $('input[name="bosyuu_fun"]').val(0)
+    }
+  });
+  // 時間タイムチェンジ1
+  $("#test1-1").change(function() {
+    tmp_time1 = new Date($('input[name="test1"]').val().replace(/-/g,"/")+" "+('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2));
+    var time1 = tmp_time1.getTime() - now_date.getTime()
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1; // m
+    if (day3 >= 0){
+      $('input[name="bosyuu_fun"]').val(day3)
+    }else{
+      $('input[name="bosyuu_fun"]').val(0)
+    }
+  });
+  // 分タイムチェンジ1
+  $("#test1-2").change(function() {
+    tmp_time1 = new Date($('input[name="test1"]').val().replace(/-/g,"/")+" "+('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2));
+    
+    var time1 = tmp_time1.getTime() - now_date.getTime()
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1; // m
+    if (day3 >= 0){
+      $('input[name="bosyuu_fun"]').val(day3)
+    }else{
+      $('input[name="bosyuu_fun"]').val(0)
+    }
+  });
+  // メインタイムチェンジ2
+  $('input[name="test2"]').change(function() {
+    tmp_time2 = new Date($('input[name="test2"]').val().replace(/-/g,"/")+" "+('0' + $("#test1-1").val()).slice(-2)+':'+('0'+$("#test1-2").val()).slice(-2));
+
+    var time1 = tmp_time1.getTime() - tmp_time2.getTime();
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1 - $('input[name="bosyuu_fun"]').val(); // m
+    if (day3 >= 0){
+      $('input[name="play_fun"]').val(day3)
+    }else{
+      $('input[name="play_fun"]').val(0)
+    }
+  });
+  // 時間タイムチェンジ2
+  $("#test2-1").change(function() {
+    tmp_time1 = new Date($('input[name="test2"]').val().replace(/-/g,"/")+" "+('0' + $("#test2-1").val()).slice(-2)+':'+('0'+$("#test2-2").val()).slice(-2));
+    
+    var time1 = tmp_time1.getTime() - tmp_time2.getTime();
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1 - $('input[name="bosyuu_fun"]').val(); // m
+    if (day3 >= 0){
+      $('input[name="play_fun"]').val(day3)
+    }else{
+      $('input[name="play_fun"]').val(0)
+    }
+  });
+  // 分タイムチェンジ2
+  $("#test2-2").change(function() {
+    tmp_time1 = new Date($('input[name="test2"]').val().replace(/-/g,"/")+" "+('0' + $("#test2-1").val()).slice(-2)+':'+('0'+$("#test2-2").val()).slice(-2));
+    
+    var time1 = tmp_time1.getTime() - tmp_time2.getTime();
+    var day1 = Math.floor(time1 / (1000 * 60 * 60 * 24)); // d
+    var day2 = Math.floor(time1 / (1000 * 60 * 60 )); // h
+    var day3 = Math.floor(time1 / (1000 * 60 )) + 1 - $('input[name="bosyuu_fun"]').val(); // m
+    if (day3 >= 0){
+      $('input[name="play_fun"]').val(day3)
+    }else{
+      $('input[name="play_fun"]').val(0)
+    }
+  });
+});
+</script>
+
+<style type="text/css">
+<!--
+.s-30 {
+  width: 30px;
+}
+
+.copy_alert {
+  display: none;
+}
+
+.hozon_alert {
+  display: none;
+  background-color: #ff0000
+}
+
+.yomikomi_alert {
+  display: none;
+  background-color: #ff0000
+}
+
+.txt{
+    display: inline-block;
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid #999;
+    box-sizing: border-box;
+    background: #f2f2f2;
+    margin: 0.5em 0;
+}
+-->
+</style>
+<title>たぼっとBO投稿コマンド作成ツール(コピーのみ)</title>
+</head>
+<body style="margin-left:50px">
+<div style="height:200px"></div>
+<div width="100%" style="background-color: #ffffa0;">保存機能（※使わない場合、記載しなくて良い）</div>
+No:<input type="number" name="lo_no" ></input>
+<select name="lo_option" id="select_load">
+<option>読み込みを行ってください。</option>
+</select>
+<br>
+内容:<input type="text" name="lo_disp"></input><br>
+<button type="button" id="js-copybtn5">読み込み</button><button type="button" id="js-copybtn6">保存</button>
+<span id="js-hozonalert" class="hozon_alert">保存できました！</span>
+<span id="js-yomikomialert" class="yomikomi_alert">読み込みできました！</span>
+<br>
+<br>
+<div width="100%" style="background-color: #a0a0ff;">メイン項目（※保存ボタンを押下した際に、「募集タイトル」「部屋番号」「サブ項目」の内容は保存される。）</div>
+<font color="red">※</font>募集タイトル：<input type="text" name="text1" class="txt"></input><br>
+部屋番号：<input type="text" name="text2" class="txt"></input><br>
+サブ項目：（※１）<input type="text" name="text4" class="txt"></input><br>
+・↑ボンバーのルールを設定する場合、ここは空でないといけない
+<br><br>
+※人数・時間
+<br>
+<font color="red">※</font>最低：<input type="number" value="1" name="minnum"></input>人　<font color="red">※</font>最大：<input type="number" value="4" name="maxnum"></input>人<br>
+<br>
+募集分数：<br>
+<input type="date" name="test1"></input>
+<select id="test1-1">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+<option>21</option>
+<option>22</option>
+<option>23</option>
+</select>
+<select id="test1-2">
+<option>0</option>
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+<option>25</option>
+<option>30</option>
+<option>35</option>
+<option>40</option>
+<option>45</option>
+<option>50</option>
+<option>55</option>
+</select></br>
+<font color="red">※</font><input type="number" value="15" name="bosyuu_fun"></input><br><br>
+プレイ分数：<br>
+<input type="date" name="test2"></input>
+<select id="test2-1">
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>
+<option>15</option>
+<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>
+<option>20</option>
+<option>21</option>
+<option>22</option>
+<option>23</option>
+</select>
+<select id="test2-2">
+<option>0</option>
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+<option>25</option>
+<option>30</option>
+<option>35</option>
+<option>40</option>
+<option>45</option>
+<option>50</option>
+<option>55</option>
+</select><button type="button" id="js-copybtn8">再計算</button><br>
+<font color="red">※</font><input type="number" value="30" name="play_fun"></input><br>
+（※プレイ分数を設定した後に、募集分数を設定した場合、再計算ボタンを押してください。）
+<br><br>
+<div width="100%" style="background-color: #ffa0a0;">サブ項目（※１を設定しなかった場合、こっちの設定が適用される）</div>
+ステージ：<br>
+<label for="sample_checkbox1">
+<input type="checkbox" id="sample_checkbox1" name="checkbox1" value="ギン" />ギンギン
+</label>
+<label for="sample_checkbox2">
+<input type="checkbox" id="sample_checkbox2" name="checkbox2" value="マスピ" />マスピ
+<br>
+</label>
+<label for="sample_checkbox3">
+<input type="checkbox" id="sample_checkbox3" name="checkbox3" value="スタン" />スタンダード
+</label>
+<label for="sample_checkbox4">
+<input type="checkbox" id="sample_checkbox4" name="checkbox4" value="ランダム" />ランダム
+</label>
+<br>
+<label for="sample_checkbox5">
+<input type="checkbox" id="sample_checkbox5" name="checkbox5" value="ＧＰスタ" />グランプリ（スタンダード）
+</label>
+<label for="sample_checkbox6">
+<input type="checkbox" id="sample_checkbox6" name="checkbox6" value="ＧＰクリ" />グランプリ（クリスタル）
+</label>
+<br>
+<label for="sample_checkbox7">
+<input type="checkbox" id="sample_checkbox7" name="checkbox7" value="６４特無" />64特殊なし
+</label>
+<label for="sample_checkbox8">
+<input type="checkbox" id="sample_checkbox8" name="checkbox8" value="６４特有" />64特殊あり
+</label><br><br>
+
+<table>
+<colgroup span="1" style="background-color:#e0e0ff"></colgroup>
+<colgroup span="10" style="background-color:#ffffff"></colgroup>
+<tr><td style="background-color:#ffff00">回し方：</td>
+<td><label><input type="radio" name="radio1" value="" checked>未設定</input></label></td>
+<td>　</td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio1" value="リスト.順回し">順番回し</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio1" value="リスト.気分">気分次第</input></label></td></tr>
+<tr><td style="background-color:#a0a0ff">※普通ルール</td></tr>
+<tr><td>プレッシャーブロック：</td>
+<td><label><input type="radio" name="radio2" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio2" value="壁.無し">無し</input></label></td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio2" value="壁.有り">有り</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio2" value="壁.気分">気分次第</input></label></td></tr>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>シャッフル：</td>
+<td><label><input type="radio" name="radio3" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio3" value="混.無し">無し</input></label></td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio3" value="混.固定">固定</input></label></td>
+<td><label><input type="radio" name="radio3" value="混.混ぜ">シャッフル</input></label></td>
+<td><label><input type="radio" name="radio3" value="混.気分">気分次第</input></label></td></tr>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>特殊：</td>
+<td><label><input type="radio" name="radio4" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio4" value="特.無し">無し</input></label></td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio4" value="特.有り">有り</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio4" value="特.気分">気分次第</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>みそぼん：</td>
+<td><label><input type="radio" name="radio5" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio5" value="みそ.無し">無し</input></label></td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio5" value="みそ.有り">有り</input></label></td>
+<td><label><input type="radio" name="radio5" value="みそ.強">ブースト</input></label></td>
+<td><label><input type="radio" name="radio5" value="みそ.気分">気分次第</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>初：</td>
+<td><label><input type="radio" name="radio6" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio6" value="初.無し">無し</input></label></td>
+<td><label><input type="radio" name="radio6" value="なる無し">なるべく無し</input></label></td>
+<td><label><input type="radio" name="radio6" value="初.30×">30秒×</input></label></td>
+<td><label><input type="radio" name="radio6" value="初.自由">自由</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr style="background-color:#ffffff"><td style="background-color:#ffa0ff">※特殊ルール</td></tr>
+<tr><td>序攻：</td>
+<td><label><input type="radio" name="radio7" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio7" value="序攻：全開">全開通</input></label></td>
+<td><label><input type="radio" name="radio7" value="序攻：個開">個別開通</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio7" value="序攻：有">有り</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>補助：</td>
+<td><label><input type="radio" name="radio8" value="" checked>未設定</input></label></td>
+<td><label><input type="radio" name="radio8" value="補：譲り">譲り合い</input></label></td>
+<td>　</td>
+<td>　</td>
+<td><label><input type="radio" name="radio8" value="補：奪取">奪い合い</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>途中退出：</td>
+<td><label><input type="radio" name="radio9" value="" checked>未設定</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio9" value="途退.なる無し">なるべく無し</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio9" value="途退.自由">自由</input></label></td>
+<tr style="background-color:#ffffff"><td>　</td></tr>
+<tr><td>取り下げ：</td>
+<td><label><input type="radio" name="radio10" value="" checked>未設定</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio10" value="取下.なる無し">なるべく無し</input></label></td>
+<td>　</td>
+<td><label><input type="radio" name="radio10" value="取下.自由">自由</input></label></td>
+</table><br>
+<div width="100%" style="background-color: #ffffa0;">管理機能</div>
+管理番号：（※２）<input type="text" name="text3"></input><br>
+※『ルーム作成コマンド』以外を作る場合は、※２を設定する<br>
+<div width="100%" style="background-color: #ffffa0;">追加項目</div>
+ニックネーム：（※３、※４）<input type="text" name="text5"></input><br>
+部屋レベル：（※４）<input type="text" name="text6"></input><br>
+招待URL：（※４）<input type="text" name="text7"></input><br>
+チャンネル名：（※４）<input type="text" name="text8"></input><br>
+配信先URL：（※４）<input type="text" name="text9"></input><br>
+※『Lineに張る用文字列』を作る場合は、※３も設定する
+※『たぼっとに張る用文字列』を作る場合は、※４も設定する
+<br>
+
+<div width="100%" style="background-color: #a0a0a0;">コマンド生成</div>
+
+<label for="realtime_checkbox">
+<input type="checkbox" id="realtime_checkbox" />募集分数を再設定する。（ルーム作成コマンド作成時）</input>
+</label>
+
+<table><tr>
+  <td>
+    <button type="button" id="js-copybtn1" style="height:100px;background-color: #a0a0ff;">ルーム作成コマンドを作成</button>
+  </td>
+  <td>
+    <button type="button" id="js-copybtn9" style="height:100px;background-color: #a0ffa0;">Lineに貼る用文字列を作成</button>
+  </td>
+  </tr>
+  <tr>
+  <td colspan="4">
+    <button type="button" id="js-copybtn10" style="height:100px;background-color: #ff00ff;">たぼっとに貼る用文字列を作成</button>
+  </td>
+  </tr>
+  <tr>
+  <td>
+    <button type="button" id="js-copybtn2" style="height:100px;background-color: #ffffa0;">部屋名変更コマンドを作成</button>
+  </td>
+  <td>
+    <button type="button" id="js-copybtn3" style="height:100px;background-color: #ffffa0;">ルーム番号変更コマンドを作成</button>
+  </td>
+  <td>
+    <button type="button" id="js-copybtn4" style="height:100px;background-color: #ffffa0;">サブ項目変更コマンドを作成</button>
+  </td>
+  <td>
+    <span id="js-copyalert" class="copy_alert" style="height:100px;background-color: #ff0000">コピーできました！</span>
+  </td>
+</tr></table>
+<p id="js-copytext" style="width:100%">コピーするテキスト</p>
+※コピーを行った後は、（たぼっと系チャンネル） に貼り付けする(※ボタンを押したら自動的にコピーされるので、貼り付けの動作はdiscordアプリ内で行う)
+
+<div style="height:400px"></div>
+
+</body>
+</html>
